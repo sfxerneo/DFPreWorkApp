@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.os.FileUtils;
+import org.apache.commons.io.FileUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnAdd;
     EditText etItem;
     RecyclerView rvItems;
+    ItemsAdapter itemsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         btnAdd = findViewById(R.id.btnAdd);
         etItem = findViewById(R.id.etItem);
         rvItems = findViewById(R.id.rvItems);
-        ItemsAdapter itemsAdapter;
 
         loadItems();
 
@@ -43,11 +43,11 @@ public class MainActivity extends AppCompatActivity {
             public void onItemLongClicked(int position) {
                 items.remove(position);
                 itemsAdapter.notifyItemRemoved(position);
-                Toast.makeText(getApplicationContext(), "Item was added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Item was removed", Toast.LENGTH_SHORT).show();
                 saveItems();
             }
         };
-        ItemsAdapter itemsAdapter = new ItemsAdapter(items, onLongClickListener);
+        itemsAdapter = new ItemsAdapter(items, onLongClickListener);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setLayoutManager(new LinearLayoutManager(this));
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void loadItems() {
         try {
-            items = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset());
+            items = new ArrayList<>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
         } catch (IOException e) {
             Log.e("MainActivity", "Error reading items", e);
             items = new ArrayList<>();
